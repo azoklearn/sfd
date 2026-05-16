@@ -209,10 +209,11 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   display: inline-flex; align-items: center; gap: .5rem;
   background: var(--ink-dark);
   color: #fff;
-  padding: .65rem 1.2rem;
-  border-radius: 6px;
+  padding: .65rem 1.25rem;
+  border-radius: 999px;
   font-size: .82rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: all .35s cubic-bezier(.2,.8,.2,1);
   position: relative;
   overflow: hidden;
@@ -1006,6 +1007,132 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   .about-grid { grid-template-columns: 1fr; }
 }
 
+/* ============ REVIEWS ============ */
+.reviews {
+  padding: 8rem 0;
+  position: relative;
+  z-index: 2;
+}
+.reviews-grid {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.review-card {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.6rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .52);
+  border: 1px solid rgba(255, 255, 255, .62);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 14px 42px -14px rgba(124, 58, 237, .12),
+    0 2px 8px -2px rgba(0, 0, 0, .04),
+    inset 0 1px 0 0 rgba(255, 255, 255, .8);
+  position: relative;
+  overflow: hidden;
+  transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s cubic-bezier(.2,.8,.2,1), border-color .45s cubic-bezier(.2,.8,.2,1);
+}
+.review-card::before {
+  content: '“';
+  position: absolute;
+  right: 1.2rem;
+  bottom: -2.5rem;
+  font-family: var(--serif);
+  font-size: 9rem;
+  line-height: 1;
+  color: rgba(126, 91, 217, .12);
+  pointer-events: none;
+}
+.review-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, .9);
+  box-shadow:
+    0 24px 64px -16px rgba(232, 90, 79, .18),
+    0 8px 18px -4px rgba(124, 58, 237, .12),
+    inset 0 1px 0 0 rgba(255, 255, 255, .9);
+}
+.review-card-featured {
+  grid-column: span 2;
+  min-height: 320px;
+  padding: 2.2rem;
+  background:
+    radial-gradient(circle at 12% 15%, rgba(245, 145, 90, .28), transparent 34%),
+    radial-gradient(circle at 85% 80%, rgba(126, 91, 217, .24), transparent 34%),
+    rgba(255, 255, 255, .58);
+}
+.review-card-featured .review-text {
+  max-width: 64ch;
+  font-size: clamp(1.18rem, 1.8vw, 1.75rem);
+  line-height: 1.28;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.review-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.review-name {
+  font-family: var(--serif);
+  font-size: 1.55rem;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.review-meta {
+  min-width: 12ch;
+  max-width: 18ch;
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  text-align: right;
+  color: var(--ink-3);
+}
+.review-card-featured .review-meta {
+  max-width: none;
+  white-space: nowrap;
+}
+.review-text {
+  color: var(--ink-2);
+  font-size: .98rem;
+  line-height: 1.58;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1000px) {
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .reviews-grid { grid-template-columns: 1fr; }
+  .review-card,
+  .review-card-featured {
+    grid-column: auto;
+    min-height: auto;
+    padding: 1.4rem;
+  }
+  .review-card-featured .review-text { font-size: 1.25rem; }
+  .review-topline { flex-direction: column; }
+  .review-meta {
+    max-width: none;
+    text-align: left;
+  }
+}
+
 /* ============ CONTACT ============ */
 .contact {
   padding: 10rem var(--pad);
@@ -1065,6 +1192,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 }
 .contact-links {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
   font-family: var(--mono);
@@ -1077,6 +1205,10 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   transition: color .3s;
 }
 .contact-links a:hover { color: var(--coral); }
+.contact-email {
+  text-transform: none;
+  letter-spacing: 0;
+}
 
 /* ============ FOOTER ============ */
 .footer {
@@ -1139,9 +1271,229 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 }
 
 /* ============ REVEAL ANIMATION ============ */
+.reveal-word {
+  display: inline-block;
+  white-space: nowrap;
+}
 .reveal-char {
   display: inline-block;
   will-change: opacity, transform, filter;
+}
+
+/* ============ MOBILE TUNING ============ */
+@media (max-width: 700px) {
+  :root { --pad: clamp(1rem, 5vw, 1.35rem); }
+
+  .nav {
+    top: .75rem;
+    width: auto;
+    max-width: calc(100% - 1.5rem);
+  }
+  .nav.scrolled {
+    top: .5rem;
+    max-width: calc(100% - 1.5rem);
+  }
+  .nav-inner {
+    justify-content: center;
+    gap: 0;
+    padding: .38rem;
+  }
+  .nav-brand,
+  .nav-links {
+    display: none;
+  }
+  .nav-cta {
+    padding: .68rem 1.05rem;
+    font-size: .8rem;
+  }
+
+  .hero {
+    min-height: 100dvh;
+    padding-top: 5.75rem;
+  }
+  .hero-content {
+    min-height: calc(100dvh - 5.75rem);
+    gap: 1.6rem;
+  }
+  .hero-meta-grid {
+    gap: 1rem;
+  }
+  .hero-meta-text {
+    max-width: 34ch;
+    font-size: .82rem;
+  }
+  .hero-bigname {
+    font-size: clamp(3.5rem, 18.5vw, 4.85rem);
+    letter-spacing: -.04em;
+  }
+  .trusted-band {
+    padding: 2.75rem 0 1rem;
+  }
+
+  .work,
+  .services,
+  .process,
+  .about,
+  .reviews {
+    padding: 5rem 0;
+  }
+  .section-head {
+    margin-bottom: 3rem;
+  }
+  .section-eyebrow {
+    font-size: .68rem;
+    letter-spacing: .12em;
+    margin-bottom: 1rem;
+  }
+  .section-title,
+  .about-title,
+  .contact-title {
+    text-wrap: balance;
+    max-width: 100%;
+  }
+  .section-title {
+    font-size: clamp(2.35rem, 13vw, 3.85rem);
+    line-height: 1.02;
+  }
+  .section-sub {
+    font-size: .98rem;
+    margin-top: 1rem;
+  }
+  .projects {
+    gap: 3.25rem;
+  }
+  .project-visual {
+    border-radius: 16px;
+  }
+  .project-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .35rem;
+    letter-spacing: .08em;
+  }
+  .project-name {
+    font-size: clamp(1.75rem, 9vw, 2.25rem);
+  }
+
+  .services-grid,
+  .about-right {
+    gap: .85rem;
+  }
+  .service-card,
+  .stat {
+    border-radius: 18px;
+    padding: 1.35rem;
+  }
+  .service-card h3 {
+    font-size: 1.72rem;
+  }
+  .service-list li {
+    font-size: .66rem;
+    letter-spacing: .05em;
+  }
+
+  .process-step {
+    padding: 2rem 0;
+    border-radius: 0;
+  }
+  .process-step:hover {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .about-grid {
+    gap: 2.5rem;
+  }
+  .about-title {
+    font-size: clamp(2.3rem, 13vw, 3.9rem);
+  }
+  .about-right {
+    grid-template-columns: 1fr;
+  }
+
+  .reviews-grid {
+    gap: .85rem;
+  }
+  .review-card,
+  .review-card-featured {
+    border-radius: 18px;
+    gap: 1.35rem;
+  }
+  .review-name {
+    font-size: 1.38rem;
+  }
+  .review-meta,
+  .review-card-featured .review-meta {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.45;
+    letter-spacing: .08em;
+  }
+  .review-text,
+  .review-card-featured .review-text {
+    font-size: .98rem;
+    line-height: 1.55;
+  }
+
+  .contact {
+    padding: 6rem var(--pad);
+  }
+  .contact-title {
+    font-size: clamp(2.45rem, 14vw, 4.25rem);
+    line-height: 1;
+  }
+  .contact-sub {
+    max-width: 31ch;
+    margin: 0 auto 2rem;
+    font-size: .98rem;
+  }
+  .contact-actions {
+    margin-bottom: 2.5rem;
+  }
+  .btn-large {
+    padding: 1rem 1.35rem;
+    font-size: .95rem;
+  }
+  .contact-links {
+    gap: .85rem 1.2rem;
+    font-size: .72rem;
+    letter-spacing: .08em;
+  }
+  .contact-email {
+    flex-basis: 100%;
+    font-size: .8rem;
+    overflow-wrap: anywhere;
+  }
+
+  .footer {
+    padding: 2rem var(--pad) 0;
+  }
+  .footer-inner {
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .footer-info {
+    gap: .6rem;
+    flex-direction: column;
+    font-size: .68rem;
+    letter-spacing: .08em;
+  }
+  .footer-mega {
+    font-size: clamp(4rem, 24vw, 7rem);
+    letter-spacing: -.03em;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-cta {
+    padding-inline: .9rem;
+    font-size: .76rem;
+  }
+  .section-title,
+  .about-title,
+  .contact-title {
+    hyphens: auto;
+  }
 }
 
 /* ============ SCROLLBAR ============ */

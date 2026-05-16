@@ -87,18 +87,27 @@ function splitIntoChars(el) {
   const walk = (node) => {
     if (node.nodeType === 3) {
       const frag = document.createDocumentFragment();
-      const text = node.textContent;
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        if (ch === ' ' || ch === '\n' || ch === '\t') {
-          frag.appendChild(document.createTextNode(ch));
-        } else {
+      const parts = node.textContent.match(/(\s+|\S+)/g) || [];
+
+      parts.forEach((part) => {
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(part));
+          return;
+        }
+
+        const word = document.createElement('span');
+        word.className = 'reveal-word';
+
+        for (let i = 0; i < part.length; i++) {
           const span = document.createElement('span');
           span.className = 'reveal-char';
-          span.textContent = ch;
-          frag.appendChild(span);
+          span.textContent = part[i];
+          word.appendChild(span);
         }
-      }
+
+        frag.appendChild(word);
+      });
+
       node.replaceWith(frag);
     } else if (node.nodeType === 1 && !node.classList.contains('reveal-char')) {
       Array.from(node.childNodes).forEach(walk);
@@ -193,6 +202,18 @@ gsap.utils.toArray('.service-card').forEach((card, i) => {
     duration: 1,
     ease: 'expo.out',
     delay: i * 0.08,
+  });
+});
+
+// ============ REVIEWS REVEAL ============
+gsap.utils.toArray('.review-card').forEach((card, i) => {
+  gsap.from(card, {
+    scrollTrigger: { trigger: card, start: 'top 90%' },
+    y: 42,
+    opacity: 0,
+    duration: 0.9,
+    ease: 'expo.out',
+    delay: (i % 3) * 0.06,
   });
 });
 
