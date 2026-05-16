@@ -52,15 +52,25 @@ const heroSec = document.querySelector('.hero');
 const heroVeil = document.querySelector('.hero-veil');
 if (heroSec && heroVeil) {
   let mx = 50, my = 50, tx = 50, ty = 50;
+  const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 701px)');
 
   heroSec.addEventListener('mousemove', (e) => {
+    if (!desktopPointer.matches) return;
     const rect = heroSec.getBoundingClientRect();
     tx = ((e.clientX - rect.left) / rect.width) * 100;
     ty = ((e.clientY - rect.top) / rect.height) * 100;
   });
-  heroSec.addEventListener('mouseleave', () => { tx = 50; ty = -40; });
+  heroSec.addEventListener('mouseleave', () => {
+    if (!desktopPointer.matches) return;
+    tx = 50;
+    ty = -40;
+  });
 
   function loop() {
+    if (!desktopPointer.matches) {
+      tx = 50;
+      ty = 50;
+    }
     mx += (tx - mx) * 0.1;
     my += (ty - my) * 0.1;
     heroVeil.style.setProperty('--mx', `${mx}%`);

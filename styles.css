@@ -1315,6 +1315,10 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
     min-height: calc(100dvh - 5.75rem);
     gap: 1.6rem;
   }
+  .hero-veil {
+    --mx: 50%;
+    --my: 50%;
+  }
   .hero-meta-grid {
     gap: 1rem;
   }
