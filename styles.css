@@ -273,7 +273,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
     radial-gradient(circle 760px at calc(var(--mx, 50%) - 6%) calc(var(--my, 50%) + 6%), transparent 0%, rgba(0,0,0,.4) 60%, #000 92%);
   -webkit-mask-image: var(--reveal);
   mask-image: var(--reveal);
-  filter: url(#hero-organic);
+  filter: none;
   will-change: mask-image;
 }
 .hero-veil::after {
@@ -1318,6 +1318,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   .hero-veil {
     --mx: 50%;
     --my: 50%;
+    filter: none;
   }
   .hero-meta-grid {
     gap: 1rem;
