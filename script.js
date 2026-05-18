@@ -184,6 +184,109 @@ gsap.utils.toArray('.project').forEach((project, i) => {
   });
 });
 
+// ============ LIVE PREVIEWS MANAGER ============
+const previewProjects = Array.from(document.querySelectorAll('.project'))
+  .filter(project => project.querySelector('iframe[data-src]'));
+const visiblePreviewProjects = new Set();
+
+const maxLivePreviews = () => window.matchMedia('(max-width: 700px)').matches ? 1 : 3;
+
+function getPreviewFrame(project) {
+  return project.querySelector('iframe[data-src]');
+}
+
+function loadProjectPreview(project) {
+  const frame = getPreviewFrame(project);
+  if (!frame || frame.dataset.loaded === 'true') return;
+
+  frame.addEventListener('load', () => {
+    if (frame.dataset.loaded === 'true' && frame.src !== 'about:blank') {
+      project.classList.add('is-preview-loaded');
+    }
+  }, { once: true });
+
+  frame.src = frame.dataset.src;
+  frame.dataset.loaded = 'true';
+}
+
+function unloadProjectPreview(project) {
+  const frame = getPreviewFrame(project);
+  if (!frame || frame.dataset.loaded !== 'true') return;
+
+  frame.src = 'about:blank';
+  frame.dataset.loaded = 'false';
+  project.classList.remove('is-preview-loaded');
+}
+
+function syncProjectPreviews() {
+  const viewportCenter = window.innerHeight / 2;
+  const keep = new Set(
+    Array.from(visiblePreviewProjects)
+      .sort((a, b) => {
+        const aRect = a.getBoundingClientRect();
+        const bRect = b.getBoundingClientRect();
+        const aDistance = Math.abs((aRect.top + aRect.height / 2) - viewportCenter);
+        const bDistance = Math.abs((bRect.top + bRect.height / 2) - viewportCenter);
+        return aDistance - bDistance;
+      })
+      .slice(0, maxLivePreviews())
+  );
+
+  previewProjects.forEach(project => {
+    if (keep.has(project)) {
+      loadProjectPreview(project);
+    } else {
+      unloadProjectPreview(project);
+    }
+  });
+}
+
+if ('IntersectionObserver' in window && previewProjects.length) {
+  let previewSyncQueued = false;
+  const schedulePreviewSync = () => {
+    if (previewSyncQueued) return;
+    previewSyncQueued = true;
+    requestAnimationFrame(() => {
+      previewSyncQueued = false;
+      syncProjectPreviews();
+    });
+  };
+
+  const previewObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        visiblePreviewProjects.add(entry.target);
+      } else {
+        visiblePreviewProjects.delete(entry.target);
+      }
+    });
+
+    schedulePreviewSync();
+  }, {
+    rootMargin: '320px 0px',
+    threshold: 0.08,
+  });
+
+  previewProjects.forEach(project => {
+    previewObserver.observe(project);
+
+    project.addEventListener('mouseenter', () => {
+      visiblePreviewProjects.add(project);
+      schedulePreviewSync();
+    });
+
+    project.addEventListener('focusin', () => {
+      visiblePreviewProjects.add(project);
+      schedulePreviewSync();
+    });
+  });
+
+  window.addEventListener('scroll', schedulePreviewSync, { passive: true });
+  window.addEventListener('resize', schedulePreviewSync);
+} else {
+  previewProjects.slice(0, maxLivePreviews()).forEach(loadProjectPreview);
+}
+
 // ============ SERVICES CARDS - MOUSE LIGHT ============
 document.querySelectorAll('.service-card').forEach(card => {
   const color = card.dataset.color || '#E85A4F';

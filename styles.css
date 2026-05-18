@@ -648,6 +648,8 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .project {
   display: block;
   position: relative;
+  content-visibility: auto;
+  contain-intrinsic-size: 650px;
   transition: transform .5s cubic-bezier(.2,.8,.2,1);
 }
 .project:nth-child(even) { transform: translateY(4rem); }
@@ -677,6 +679,44 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .project-frame {
   position: relative;
   width: 100%; height: 100%;
+  background:
+    radial-gradient(circle at 22% 20%, rgba(245, 145, 90, .22), transparent 36%),
+    radial-gradient(circle at 80% 78%, rgba(126, 91, 217, .18), transparent 40%),
+    rgba(255, 255, 255, .36);
+}
+.project-frame::before {
+  content: 'Aperçu live';
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(26, 22, 20, .55);
+  padding: .45rem .7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .54);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 1;
+  transition: opacity .3s;
+}
+.project-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(120deg, transparent 35%, rgba(255,255,255,.32) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: preview-sheen 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.project.is-preview-loaded .project-frame::before,
+.project.is-preview-loaded .project-frame::after {
+  opacity: 0;
 }
 .project-frame iframe {
   width: 200%; height: 200%;
@@ -684,6 +724,12 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   transform: scale(.5);
   transform-origin: 0 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity .45s cubic-bezier(.2,.8,.2,1);
+}
+.project.is-preview-loaded .project-frame iframe { opacity: 1; }
+@keyframes preview-sheen {
+  to { transform: translateX(120%); }
 }
 .project-overlay {
   position: absolute; inset: 0;
